@@ -1844,13 +1844,14 @@ long long write_tile(FILE *geoms, std::atomic<long long> *geompos_in, char *meta
 			}
 
 			if(arg->limitbox.is_set == true && z >= minzoom && z <= maxzoom){
+				// upper left - max lat and min long
 				int yTile1 = lat2tiley(arg->limitbox.lat2, z);
 				int xTile1 = long2tilex(arg->limitbox.lon1, z);			
-				// min lat and max long
+				// lower right - min lat and max long
 				int yTile2 = lat2tiley(arg->limitbox.lat1, z);
 				int xTile2 = long2tilex(arg->limitbox.lon2, z);
 
-				if (tx >= xTile1 && tx < xTile2 && ty >= yTile1 && ty < yTile2){
+				if (tx > xTile1 && tx <= xTile2 && ty > yTile1 && ty <= yTile2){
 					skip = false;
 				}
 				else{
