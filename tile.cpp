@@ -1845,18 +1845,35 @@ long long write_tile(FILE *geoms, std::atomic<long long> *geompos_in, char *meta
 
 			if(arg->limitbox.is_set == true && z >= minzoom && z <= maxzoom){
 				// upper left - max lat and min long
-				int yTile1 = lat2tiley(arg->limitbox.lat2, z);
-				int xTile1 = long2tilex(arg->limitbox.lon1, z);			
+				int yTileMax = lat2tiley(arg->limitbox.lat2, z);
+				int xTileMin = long2tilex(arg->limitbox.lon1, z);			
 				// lower right - min lat and max long
-				int yTile2 = lat2tiley(arg->limitbox.lat1, z);
-				int xTile2 = long2tilex(arg->limitbox.lon2, z);
+				int yTileMin = lat2tiley(arg->limitbox.lat1, z);
+				int xTileMax = long2tilex(arg->limitbox.lon2, z);
 
-				if (tx > xTile1 && tx <= xTile2 && ty > yTile1 && ty <= yTile2){
-					skip = false;
+				//Crosses the international time line (180 / -180)
+				if (xTileMin > xTileMax){
+
+					if ((tx > xTileMin || tx <= xTileMax) && ty > yTileMax && ty <= yTileMin){
+						skip = false;
+					}
+					else{
+						skip = true;
+					}
+
 				}
+
 				else{
-					skip = true;
+
+					if (tx > xTileMin && tx <= xTileMax && ty > yTileMax && ty <= yTileMin){
+						skip = false;
+					}
+					else{
+						skip = true;
+					}
+
 				}
+				
 			}
 
 			if (sf.t < 0) {
