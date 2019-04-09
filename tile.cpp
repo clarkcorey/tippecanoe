@@ -1691,12 +1691,12 @@ bool find_partial(std::vector<partial> &partials, serial_feature &sf, ssize_t &o
 	return false;
 }
 
-int long2tilex(double lon, int z) { 
-	return (int)(floor((lon + 180.0) / 360.0 * pow(2.0, z))); 
+unsigned int long2tilex(double lon, int z) { 
+	return (unsigned int)(floor((lon + 180.0) / 360.0 * pow(2.0, z))); 
 }
 
-int lat2tiley(double lat, int z){ 
-	return (int)(floor((1.0 - log( tan(lat * M_PI/180.0) + 1.0 / cos(lat * M_PI/180.0)) / M_PI) / 2.0 * pow(2.0, z))); 
+unsigned int lat2tiley(double lat, int z){ 
+	return (unsigned int)(floor((1.0 - log( tan(lat * M_PI/180.0) + 1.0 / cos(lat * M_PI/180.0)) / M_PI) / 2.0 * pow(2.0, z))); 
 }
 
 long long write_tile(FILE *geoms, std::atomic<long long> *geompos_in, char *metabase, char *stringpool, int z, unsigned tx, unsigned ty, int detail, int min_detail, sqlite3 *outdb, const char *outdir, int buffer, const char *fname, FILE **geomfile, int minzoom, int maxzoom, double todo, std::atomic<long long> *along, long long alongminus, double gamma, int child_shards, long long *meta_off, long long *pool_off, unsigned *initial_x, unsigned *initial_y, std::atomic<int> *running, double simplification, std::vector<std::map<std::string, layermap_entry>> *layermaps, std::vector<std::vector<std::string>> *layer_unmaps, size_t tiling_seg, size_t pass, size_t passes, unsigned long long mingap, long long minextent, double fraction, const char *prefilter, const char *postfilter, struct json_object *filter, write_tile_args *arg) {
@@ -1845,11 +1845,11 @@ long long write_tile(FILE *geoms, std::atomic<long long> *geompos_in, char *meta
 
 			if(arg->limitbox.is_set == true && z >= minzoom && z <= maxzoom){
 				// upper left - max lat and min long
-				int yTileMax = lat2tiley(arg->limitbox.lat2, z);
-				int xTileMin = long2tilex(arg->limitbox.lon1, z);			
+				unsigned int yTileMax = lat2tiley(arg->limitbox.lat2, z);
+				unsigned int xTileMin = long2tilex(arg->limitbox.lon1, z);			
 				// lower right - min lat and max long
-				int yTileMin = lat2tiley(arg->limitbox.lat1, z);
-				int xTileMax = long2tilex(arg->limitbox.lon2, z);
+				unsigned int yTileMin = lat2tiley(arg->limitbox.lat1, z);
+				unsigned int xTileMax = long2tilex(arg->limitbox.lon2, z);
 
 				//Crosses the international time line (180 / -180)
 				if (xTileMin > xTileMax){
